@@ -1,2 +1,3 @@
 app_venv/
 *.sqlite3
+*.pyc
