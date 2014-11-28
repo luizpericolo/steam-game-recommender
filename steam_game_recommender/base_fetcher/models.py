@@ -15,9 +15,15 @@ class SteamGame(models.Model):
 	name = models.CharField(max_length=255)
 
 class SteamUserGame(models.Model):
-	# Chave estrangeira para o Usuário da Steam
-	user = models.ForeignKey('SteamUser', null=False)
 
-	# Chave estrangeira para o Jogo da Steam
-	game = models.ForeignKey('SteamGame', null=False)
-	
+    # Chave estrangeira para o Usuário da Steam
+    user = models.ForeignKey('SteamUser', null=False)
+    
+    # Chave estrangeira para o Jogo da Steam
+    game = models.ForeignKey('SteamGame', null=False)
+    
+    # Quantidade de horas jogadas pelo user
+    total_minutes_played = models.IntegerField(null=False)
+    
+    # Percentagem de achievements conquistados pelo user
+    achievements_percentage = models.FloatField(null=False)
