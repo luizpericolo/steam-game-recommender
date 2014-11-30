@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Steam Game Recommender </title>
+	</head>
+	<body>
+		<form action="/get_recommendation" method="post">
+			{% csrf_token %}
+			{{form}}
+			<br/><input type="submit" value="Get Recommendation!"/>
+		</form>
+	
+	</body>
+</html>

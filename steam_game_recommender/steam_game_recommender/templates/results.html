@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Recommendations! </title>
+	</head>
+	<body>
+		<h1> Recommendations for {{steam_name}}: </h1><br/>
+		<ul>
+			{% for game in games %}
+				<li> {{game.name}} - <a href="{{game.url}}" target="_blank">Link</a></li>
+			{% endfor %}
+		</ul>
+	
+	</body>
+</html>
