@@ -53,6 +53,10 @@ ROOT_URLCONF = 'steam_game_recommender.urls'
 
 WSGI_APPLICATION = 'steam_game_recommender.wsgi.application'
 
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'steam_game_recommender/templates/'),
+)
+
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
