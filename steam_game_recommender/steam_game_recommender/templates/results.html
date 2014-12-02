@@ -7,9 +7,22 @@
 		<h1> Recommendations for {{steam_name}}: </h1><br/>
 		<ul>
 			{% for game in games %}
-				<li> {{game.name}} - <a href="{{game.url}}" target="_blank">Link</a></li>
+				<li> {{game.name}} - <a href="{{game.url}}" target="_blank">Visit Steam Page</a></li>
 			{% endfor %}
 		</ul>
+		<h1> Items in {{steam_name}}'s wishlist:</h1>
+		{% for wishlist_game in wishlist_games %}
+			<div>
+				<img src="{{wishlist_game.game_image_url}}" alt="wishlist_game.game_name"><br/>
+				<h3>{{wishlist_game.game_name}}</h3><br/>
+				<a href="{{wishlist_game.game_url}}" target="_blank">Visit Steam Page</a>
+			</div>
+		{% empty %}
+			<div>
+				<h3> This user's wishlist is empty :( </h3>
+			</div>
+		{% endfor %}
+
 	
 	</body>
 </html>
