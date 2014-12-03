@@ -23,7 +23,7 @@ class SteamUserGame(models.Model):
     game = models.ForeignKey('SteamGame', null=False)
     
     # Quantidade de horas jogadas pelo user
-    total_minutes_played = models.IntegerField(null=False)
+    total_hours_played = models.FloatField(null=False)
     
     # Percentagem de achievements conquistados pelo user
     achievements_percentage = models.FloatField(null=False)
