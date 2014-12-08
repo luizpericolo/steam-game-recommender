@@ -3,26 +3,41 @@
 	<head>
 		<title> Recommendations! </title>
 	</head>
-	<body>
-		<h1> Recommendations for {{steam_name}}: </h1><br/>
-		<ul>
-			{% for game in games %}
-				<li> {{game.name}} - <a href="{{game.url}}" target="_blank">Visit Steam Page</a></li>
-			{% endfor %}
-		</ul>
-		<h1> Items in {{steam_name}}'s wishlist:</h1>
-		{% for wishlist_game in wishlist_games %}
+		<body>
 			<div>
-				<img src="{{wishlist_game.game_image_url}}" alt="wishlist_game.game_name"><br/>
-				<h3>{{wishlist_game.game_name}}</h3><br/>
-				<a href="{{wishlist_game.game_url}}" target="_blank">Visit Steam Page</a>
+			<h2> Recommendations for {{steam_name}}: </h2><br/>
+			<div style="float:left; width: 50%">
+				<h3> From the Community: </h3>
+				{% for game in games %}
+					<div style="width:100%">
+						{{forloop.counter}}[{{game.score}}]
+						<p> {{game.name}} - <a href="{{game.url}}" target="_blank">Visit Steam Page</a></p>
+					</div>
+				{% endfor %}
 			</div>
-		{% empty %}
-			<div>
-				<h3> This user's wishlist is empty :( </h3>
-			</div>
-		{% endfor %}
 
-	
+			<div style="float:right; width: 50%">
+				<h3> From Friends: </h3>
+				{% for game in games %}
+					<div>
+						<h4>{{forloop.counter}}</h4>[<h4>{{game.score}}</h4>]{{game.name}} - <a href="{{game.url}}" target="_blank">Visit Steam Page</a>
+					</div>
+				{% endfor %}
+			</div>
+
+
+			<h1> Items in {{steam_name}}'s wishlist:</h1>
+			{% for wishlist_game in wishlist_games %}
+				<div>
+					<img src="{{wishlist_game.game_image_url}}" alt="wishlist_game.game_name"><br/>
+					<h3>{{wishlist_game.game_name}}</h3><br/>
+					<a href="{{wishlist_game.game_url}}" target="_blank">Visit Steam Page</a>
+				</div>
+			{% empty %}
+				<div>
+					<h3> This user's wishlist is empty :( </h3>
+				</div>
+			{% endfor %}
+		</div>
 	</body>
 </html>
