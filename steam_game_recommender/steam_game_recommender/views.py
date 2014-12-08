@@ -54,4 +54,6 @@ def get_recommendation(request):
 	wishlistFetcher = SteamWishlistFetcher()
 	wishlist_games = wishlistFetcher.retrieve_wishlist_for_steam_id(steam_id=steam_id)
 
-	return TemplateResponse(request, 'results.html', {'steam_name': request.POST['steam_name'], 'games': games, "wishlist_games": wishlist_games})
+	ctx = {'steam_name': request.POST['steam_name'], 'games': games, "wishlist_games": wishlist_games}
+
+	return TemplateResponse(request, 'results.html', ctx)
