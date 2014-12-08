@@ -12,11 +12,9 @@ class SteamIdConverterCrawler():
 
 	def get_steamid64(self, steam_name):
 		from bs4 import BeautifulSoup
-
 		html = self._search_for(steam_name=steam_name)
 		soup = BeautifulSoup(html)
 		return soup.find("h2", id="steamID64").get_text()
-
 
 class SteamWishlistFetcher():
 	def __init__(self):
@@ -44,14 +42,45 @@ class SteamWishlistFetcher():
 
 		return wishlist
 
-
-	def retrieve_wishlist_for_steamname(self, steamname):
+	def retrieve_wishlist_for_steamname(self, steamname, k=None):
 		identifier = self.steam_name_prefix.format(steamname)
 		url = self.url.format(identifier)
-		return self._retrieve_wishlist(url=url)
 
-	def retrieve_wishlist_for_steamid(self, steamid):
-		identifier = self.steam_id_prefix.format(steamid)
+		if k:
+			return self._retrieve_wishlist(url=url)[:k]	
+		else:
+			return self._retrieve_wishlist(url=url)
+
+	def retrieve_wishlist_for_steam_id(self, steam_id, k=None):
+		identifier = self.steam_id_prefix.format(steam_id)
 		url = self.url.format(identifier)
-		return self._retrieve_wishlist(url=url)
 
+		if k:
+			return self._retrieve_wishlist(url=url)[:k]
+		else:
+			return self._retrieve_wishlist(url=url)
+
+class FriendListFetcher():
+    def __init__(self, app_key):
+        self.app_key = app_key
+        self.friend_list_url = "http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key="+app_key+"&steamid={}&relationship=friend"
+
+    def _create_request_session(self, max_retries):
+        import requests
+
+        s = requests.Session()
+        a = requests.adapters.HTTPAdapter(max_retries=max_retries)
+        b = requests.adapters.HTTPAdapter(max_retries=max_retries)
+
+        s.mount("http://", a)
+        s.mount("https://", b)
+        return s
+    
+    def get_friends(self, steamid):
+        import requests
+        #import pudb; pu.db
+        url = self.friend_list_url.format(steamid)
+        session = self._create_request_session(max_retries=10)  
+         
+        response = session.get(url)
+        return map(lambda friend: friend['steamid'],response.json()['friendslist']['friends'])
