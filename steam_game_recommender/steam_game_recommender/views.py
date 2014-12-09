@@ -32,28 +32,58 @@ def get_recommendation(request):
 	games_list = json.load(games)
 	games.close()
 
-	data = gl.SFrame.read_csv("./scored_output.csv",column_type_hints={"score": int})
+	community_data = gl.SFrame.read_csv("./steam_base.csv",column_type_hints={"score": int})
+
+	print "amigos: {}".format(friends)
+
+	friends_data = community_data.filter_by(friends, 'steam_id')
 
 	# Definindo para quem devemos fazer sugestões
 	users = [steam_id]
 
-	model = gl.recommender.create(data, user_id="steam_id", item_id="app_id", target="score")
-	#model = gl.ranking_factorization_recommender.create(data, user_id="steam_id", item_id="app_id", target="score")
-	recommended_games = model.recommend(users=users, k=5)
+	#community_model = gl.recommender.create(community_data, user_id="steam_id", item_id="app_id", target="score")
+	community_model = gl.recommender.ranking_factorization_recommender.create(community_data, user_id="steam_id", item_id="app_id", target="score")
+	#community_model = gl.recommender.factorization_recommender.create(community_data, user_id="steam_id", item_id="app_id", target="score")
+	#community_model = gl.recommender.item_similarity_recommender.create(community_data, user_id="steam_id", item_id="app_id", target="score")
+	community_recommended_games = community_model.recommend(users=users, k=5)
+
+	if friends_data.num_rows():
+		print "Quantos amigos na base: {}".format(friends_data.num_rows())
+		friends_model = gl.item_similarity_recommender.create(friends_data, user_id="steam_id", item_id="app_id", target="score")
+		friends_recommended_games = friends_model.recommend(users=users, k=5)
+	else:
+		print 'Sem amigos na base :('
+		friends_recommended_games = []
 
 	games = []
 
-	for game in recommended_games:
+	for game in community_recommended_games:
 		game = {
 			'name': games_list[game.get('app_id')],
 			'url': "http://store.steampowered.com/app/{}".format(game.get('app_id')),
 			'score': game.get('score')
 		}
 		games.append(game)
+	
+	friends_games = []
+
+	for game in friends_recommended_games:
+		game = {
+			'name': games_list[game.get('app_id')],
+			'url': "http://store.steampowered.com/app/{}".format(game.get('app_id')),
+			'score': game.get('score')
+		}
+
+		friends_games.append(game)
 
 	wishlistFetcher = SteamWishlistFetcher()
 	wishlist_games = wishlistFetcher.retrieve_wishlist_for_steam_id(steam_id=steam_id)
 
-	ctx = {'steam_name': request.POST['steam_name'], 'games': games, "wishlist_games": wishlist_games}
+	ctx = {
+		'steam_name': request.POST['steam_name'],
+		'games': games,
+		'friends_games': friends_games,
+		"wishlist_games": wishlist_games,
+	}
 
 	return TemplateResponse(request, 'results.html', ctx)
